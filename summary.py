@@ -1,36 +1,32 @@
-from flask import Flask, render_template, request
-from transformers import BartForConditionalGeneration, BartTokenizer
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from transformers import pipeline
 
-# Initialize the Flask app
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all domains on all routes
 
-# Load the BART model and tokenizer
-model = BartForConditionalGeneration.from_pretrained('facebook/bart-large-cnn')
-tokenizer = BartTokenizer.from_pretrained('facebook/bart-large-cnn')
+# Load the summarization pipeline using Hugging Face Transformers
+summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
 
-@app.route("/", methods=["GET", "POST"])
-def home():
-    summary = ""
-    if request.method == "POST":
-        # Get the user input text
-        user_input = request.form["text"]
-        
-        # Tokenize input text and generate summary with more descriptive parameters
-        inputs = tokenizer.encode("summarize: " + user_input, return_tensors="pt", max_length=1024, truncation=True)
-        
-        # Adjust the parameters to produce more descriptive summaries
-        summary_ids = model.generate(
-            inputs,
-            max_length=300,  # Increased max length for more detail
-            min_length=100,  # Increased min length to ensure a detailed summary
-            length_penalty=1.2,  # Slightly reduced length penalty for longer outputs
-            num_beams=6,  # More beams for better output quality
-            early_stopping=True
-        )
-        summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
+@app.route('/summarize', methods=['POST'])
+def summarize():
+    try:
+        # Get the input text from the POST request
+        data = request.get_json()
+        input_text = data.get('text')
 
-    # Render the HTML template and pass the summary to the frontend
-    return render_template("index.html", summary=summary)
+        # Return an error if no text is provided
+        if not input_text:
+            return jsonify({'error': 'No text provided for summarization'}), 400
 
-if __name__ == "__main__":
-    app.run(debug=True)
+        # Generate the summary using the BART model
+        summary_text = summarizer(input_text, max_length=130, min_length=30, do_sample=False)
+
+        # Return the summary in JSON format
+        return jsonify({'summary': summary_text[0]['summary_text']})
+
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=True)
