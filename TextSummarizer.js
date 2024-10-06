@@ -14,6 +14,7 @@ async function summarizeText() {
     outputContainer.style.display = "none";
 
     try {
+        // Make sure this is a POST request
         const response = await fetch("https://text-summarizer-production-ef4b.up.railway.app/summarize", {
             method: "POST",
             headers: {
