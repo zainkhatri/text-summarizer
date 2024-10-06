@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Summarizer</title>
+    <link rel="stylesheet" href="TextSummarizer.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Text Summarizer</h1>
+        <textarea id="inputText" rows="10" placeholder="Enter the text you want to summarize here..."></textarea>
+        <button onclick="summarizeText()">Summarize</button>
+        <div id="loading" style="display: none;">Loading...</div>
+        <div id="outputContainer" style="display: none;">
+            <h2>Summary:</h2>
+            <p id="summaryText"></p>
+        </div>
+    </div>
+
+    <script src="TextSummarizer.js"></script>
+</body>
+</html>
