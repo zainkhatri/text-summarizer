@@ -1,3 +1,4 @@
+// TextSummarizer.js
 async function summarizeText() {
     const inputText = document.getElementById("inputText").value;
     const loading = document.getElementById("loading");
