@@ -9,6 +9,11 @@ CORS(app)  # Enable CORS for all domains on all routes
 # Load a smaller summarization model using Hugging Face Transformers
 summarizer = pipeline("summarization", model="facebook/bart-base")
 
+# Define the home endpoint
+@app.route('/')
+def home():
+    return "Welcome to the Text Summarizer API. Use the /summarize endpoint to summarize text."
+
 # Define the summarize endpoint
 @app.route('/summarize', methods=['POST'])
 def summarize():
@@ -29,3 +34,7 @@ def summarize():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+# Run the app (for local testing purposes)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
