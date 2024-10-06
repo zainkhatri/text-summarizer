@@ -1,24 +1,110 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Text Summarizer</title>
-    <link rel="stylesheet" href="TextSummarizer.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #fdd5d5; /* Light red background */
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+        }
+        button {
+            background-color: #800000;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #800000;
+        }
+        .summary {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .loading {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .spinner {
+            border: 4px solid #c07d7d;
+            border-radius: 50%;
+            border-top: 4px solid #FF7F7E;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .description {
+            margin-bottom: 20px;
+            font-size: 16px;
+            color: #555;
+        }
+        .how-it-works {
+            background-color: #e3a8a8;
+            padding: 15px;
+            border-left: 5px solid #800000;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+    </script>
 </head>
 <body>
     <div class="container">
         <h1>Text Summarizer</h1>
-        <textarea id="inputText" rows="10" placeholder="Enter the text you want to summarize here..."></textarea>
-        <button onclick="summarizeText()">Summarize</button>
-        <div id="loading" style="display: none;">Loading...</div>
-        <div id="outputContainer" style="display: none;">
-            <h2>Summary:</h2>
-            <p id="summaryText"></p>
+        <!-- Description of how the app works -->
+        <div class="how-it-works">
+            <h2>How the App Works</h2>
+            <p>This app uses <strong>supervised machine learning</strong> to summarize long pieces of text. It is powered by the <strong>BART</strong> which is Bidirectional and Auto-Regressive Transformers model, which has been trained on a large amount of text data. The app takes the user input and produces a summary based on the previous patterns from the data.</p>
+            <p>Enter your text, and the app will return a summary to your prompt. For the best results, try entering text between 500 and 1,000 words. Thanks! <strong>- Zain</strong></p>
         </div>
+        <!-- Form and loading spinner -->
+        <div class="description">
+            <p>Enter your text below and click "Summarize" to get a summary:</p>
+        </div>
+        <form method="POST" onsubmit="showLoading()">
+            <textarea name="text" rows="10" placeholder="Enter your text here..."></textarea>
+            <br><br>
+            <button type="submit">Summarize</button>
+        </form>
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Summarizing your text, please wait...</p>
+        </div>
+        {% if summary %}
+        <div class="summary">
+            <h2>Summary:</h2>
+            <p>{{ summary }}</p>
+        </div>
+        {% endif %}
     </div>
-
-    <script src="TextSummarizer.js"></script>
 </body>
 </html>
